@@ -5,7 +5,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* ---------- VALIDATION ---------- */
 function isValid(edge) {
     if (!/^[A-Z]->[A-Z]$/.test(edge)) return false;
     let [p, c] = edge.split("->");
@@ -24,9 +23,8 @@ app.post("/bfhl", (req, res) => {
     let indegree = {};
     let parentMap = {};
     let nodesSet = new Set();
-    let order = []; // for maintaining input order
+    let order = []; 
 
-    /* ---------- BUILD GRAPH ---------- */
     for (let edge of input) {
         let clean = edge.trim();
 
@@ -62,7 +60,6 @@ app.post("/bfhl", (req, res) => {
 
     let nodes = Array.from(nodesSet);
 
-    /* ---------- UNDIRECTED GRAPH ---------- */
     let undirected = {};
     for (let node of nodes) undirected[node] = [];
 
@@ -73,7 +70,6 @@ app.post("/bfhl", (req, res) => {
         }
     }
 
-    /* ---------- FIND COMPONENTS ---------- */
     function getComponents() {
         let visited = new Set();
         let components = [];
@@ -104,14 +100,12 @@ app.post("/bfhl", (req, res) => {
 
     let components = getComponents();
 
-    /* ---------- SORT COMPONENTS BY INPUT ORDER ---------- */
     components.sort((a, b) => {
         let minA = Math.min(...a.map(n => order.indexOf(n)));
         let minB = Math.min(...b.map(n => order.indexOf(n)));
         return minA - minB;
     });
 
-    /* ---------- DFS CYCLE ---------- */
     function detectCycle(node, visited, recStack, compSet) {
         if (!visited[node]) {
             visited[node] = true;
@@ -130,7 +124,6 @@ app.post("/bfhl", (req, res) => {
         return false;
     }
 
-    /* ---------- BUILD TREE ---------- */
     function buildTree(node, compSet) {
         let obj = {};
         for (let child of (graph[node] || [])) {
@@ -140,7 +133,6 @@ app.post("/bfhl", (req, res) => {
         return obj;
     }
 
-    /* ---------- DEPTH ---------- */
     function getDepth(node, compSet) {
         if (!graph[node] || graph[node].length === 0) return 1;
 
@@ -152,7 +144,7 @@ app.post("/bfhl", (req, res) => {
         return max + 1;
     }
 
-    /* ---------- PROCESS ---------- */
+   
     let hierarchies = [];
     let totalTrees = 0;
     let totalCycles = 0;
@@ -206,7 +198,7 @@ app.post("/bfhl", (req, res) => {
         }
     }
 
-    /* ---------- RESPONSE ---------- */
+    
     res.json({
         user_id: "raunakjit_22062004",
         email_id: "rs@srmist.edu.in",
@@ -222,6 +214,8 @@ app.post("/bfhl", (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
