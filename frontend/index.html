@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BFHL Analyzer</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins&family=JetBrains+Mono&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #0d1117;
+    color: white;
+    margin: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #238636;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2ea043;
+}
+
+.output {
+    margin-top: 20px;
+    background: #161b22;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    border: 1px solid #30363d;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+<h1>BFHL Hierarchy Analyzer</h1>
+
+<textarea id="input">A->B, A->C, B->D</textarea>
+<br>
+<button onclick="send()">Submit</button>
+
+<div class="error" id="error"></div>
+<div class="output" id="output"></div>
+
+</div>
+
+<script>
+async function send() {
+    let raw = document.getElementById("input").value;
+    let data = raw.split(",");
+
+    let output = document.getElementById("output");
+    let error = document.getElementById("error");
+
+    output.innerHTML = "";
+    error.innerText = "";
+
+    try {
+        let res = await fetch("http://localhost:3000/bfhl", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data })
+        });
+
+        if (!res.ok) throw new Error();
+
+        let result = await res.json();
+
+        // EXACT JSON FORMAT (no modification)
+        output.textContent = JSON.stringify(result, null, 2);
+
+    } catch (e) {
+        error.innerText = "Failed to connect to API";
+    }
+}
+</script>
+
+</body>
+</html>
