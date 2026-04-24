@@ -201,7 +201,7 @@ app.post("/bfhl", (req, res) => {
     
     res.json({
         user_id: "raunakjit_22062004",
-        email_id: "rs@srmist.edu.in",
+        email_id: "rs1985@srmist.edu.in",
         college_roll_number: "RA2311003010412",
         hierarchies,
         invalid_entries: invalid,
