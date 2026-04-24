@@ -91,7 +91,7 @@ async function send() {
     error.innerText = "";
 
     try {
-        let res = await fetch("http://localhost:3000/bfhl", {
+        let res = await fetch("https://bfhl-project-m0ix.onrender.com/bfhl", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ data })
@@ -101,7 +101,7 @@ async function send() {
 
         let result = await res.json();
 
-        // EXACT JSON FORMAT (no modification)
+        
         output.textContent = JSON.stringify(result, null, 2);
 
     } catch (e) {
